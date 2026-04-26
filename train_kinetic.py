@@ -10,7 +10,7 @@ def train():
 
     
     job = kinetic.create_job(
-        model_fn=get_model,
+        model_fn=model,
         dataset_fn=lambda: get_dataset(TRAIN_PATH),
         tpu_type="v5lite-pod-8", # TPU TYPE
         epochs=50
