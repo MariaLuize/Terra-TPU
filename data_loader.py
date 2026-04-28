@@ -1,10 +1,11 @@
 import tensorflow as tf
+import os
 
 opticalBands   = ['green','red','nir','swir1']
 opticalIndices = ['NDVI','MNDWI']
 BANDS          = opticalBands + opticalIndices
 
-RESPONSE = 'supervised's
+RESPONSE = 'supervised'
 FEATURES = BANDS + [RESPONSE]
 
 KERNEL_SIZE  = 256
@@ -36,7 +37,7 @@ def to_tuple(inputs):
   stacked = tf.stack(inputsList, axis=0)
   # Convert from CHW to HWC
   stacked = tf.transpose(stacked, [1, 2, 0])
-  bandas_data = stacked[:,:,:len(BANDS)]/255.0
+  bands_data = stacked[:,:,:len(BANDS)]/255.0
   label_data = stacked[:,:,len(BANDS):]
   return tf.cast(bands_data, tf.float32), tf.cast(label_data, tf.float32) 
 
