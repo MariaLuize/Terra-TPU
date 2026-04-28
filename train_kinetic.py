@@ -15,9 +15,10 @@ def train():
     GLOBAL_BATCH_SIZE = 64 
     TRAIN_PATH = f"gs://{bucket}/{train_folder}"
     VAL_PATH = f"gs://{bucket}/{val_folder}"
-
+    
+    # input como (256, 256, 6). Como as TPUs trabalham melhor com tamanhos estáticos, certifique-se de que no train.py você está passando exatamente o número de bandas (6) e o tamanho (256).
     model_instance = UNetModel(
-        input_shape=[None, None, len(BANDS)],
+        input_shape=[256, 256, len(BANDS)],
         dropout_rate=0.3, 
         loss='binary_crossentropy', 
         metrics_list=['RootMeanSquaredError', 'BinaryIoU']

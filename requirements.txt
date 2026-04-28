@@ -1,7 +1,9 @@
+numpy>=1.26.0
 tensorflow>=2.15.0
 kinetic
+python-dotenv
 google-cloud-storage
 earthengine-api
+# scikit-image>=0.22.0
+# patchify
 rasterio
-patchify
-python-dotenv

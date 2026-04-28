@@ -54,12 +54,13 @@ class UNetModel:
 
         model = models.Model(inputs=[inputs], outputs=[outputs])
         optimizer = tf.keras.optimizers.Nadam(self.learning_rate, name='optimizer')
-
+        
+        # Na TPU, você não deve usar run_eagerly=True. As TPUs dependem do compilador XLA para otimizar o gráfico de computação. Se deixar em modo eager, você perderá toda a velocidade do hardware e pode até encontrar erros de compatibilidade.
         model.compile(
             optimizer=optimizer,
             loss=losses.get(self.loss),
             metrics=[metrics.get(metric) for metric in self.metrics_list],
-            run_eagerly=True
+            run_eagerly=False
         )
         return model
 

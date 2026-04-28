@@ -36,7 +36,9 @@ def to_tuple(inputs):
   stacked = tf.stack(inputsList, axis=0)
   # Convert from CHW to HWC
   stacked = tf.transpose(stacked, [1, 2, 0])
-  return stacked[:,:,:len(BANDS)], stacked[:,:,len(BANDS):]
+  bandas_data = stacked[:,:,:len(BANDS)]/255.0
+  label_data = stacked[:,:,len(BANDS):]
+  return tf.cast(bands_data, tf.float32), tf.cast(label_data, tf.float32) 
 
 
 def get_dataset(bucket_path, batch_size=64, is_training=True):
