@@ -1,20 +1,10 @@
 import tensorflow as tf
 
-# FEATURES_DICT = {
-#     'green': tf.io.FixedLenFeature([256, 256], tf.float32),
-#     'red': tf.io.FixedLenFeature([256, 256], tf.float32),
-#     'nir': tf.io.FixedLenFeature([256, 256], tf.float32),
-#     'swir1': tf.io.FixedLenFeature([256, 256], tf.float32),
-#     'NDVI': tf.io.FixedLenFeature([256, 256], tf.float32),
-#     'MNDWI': tf.io.FixedLenFeature([256, 256], tf.float32),
-#     'supervised': tf.io.FixedLenFeature([256, 256], tf.float32),
-# }
-
 opticalBands   = ['green','red','nir','swir1']
 opticalIndices = ['NDVI','MNDWI']
 BANDS          = opticalBands + opticalIndices
 
-RESPONSE = 'supervised'
+RESPONSE = 'supervised's
 FEATURES = BANDS + [RESPONSE]
 
 KERNEL_SIZE  = 256
@@ -25,18 +15,48 @@ COLUMNS = [
 FEATURES_DICT = dict(zip(FEATURES, COLUMNS))
 
 def parse_tfrecord(example_proto):
-    return tf.io.parse_single_example(example_proto, FEATURES_DICT)
+  """The parsing function.
+  Read a serialized example into the structure defined by FEATURES_DICT.
+  Args:
+    example_proto: a serialized Example.
+  Returns: 
+    A dictionary of tensors, keyed by feature name.
+  """
+  return tf.io.parse_single_example(example_proto, FEATURES_DICT)
 
 def to_tuple(inputs):
-    input_list = [inputs.get(key) for key in FEATURES]
-    stacked = tf.stack(input_list, axis=-1)
-    label = tf.expand_dims(inputs.get('supervised'), axis=-1)
-    return stacked, label
+  """Function to convert a dictionary of tensors to a tuple of (inputs, outputs).
+  Turn the tensors returned by parse_tfrecord into a stack in HWC shape.
+  Args:
+    inputs: A dictionary of tensors, keyed by feature name.
+  Returns: 
+    A dtuple of (inputs, outputs).
+  """
+  inputsList = [inputs.get(key) for key in FEATURES]
+  stacked = tf.stack(inputsList, axis=0)
+  # Convert from CHW to HWC
+  stacked = tf.transpose(stacked, [1, 2, 0])
+  return stacked[:,:,:len(BANDS)], stacked[:,:,len(BANDS):]
 
-def get_dataset(bucket_path, batch_size=64):
-    glob    = tf.io.gfile.glob(bucket_path + "/*.tfrecord.gz")
-    dataset = tf.data.TFRecordDataset(glob, compression_type='GZIP')
-    dataset = dataset.map(parse_tfrecord, num_parallel_calls=tf.data.AUTOTUNE)
-    dataset = dataset.map(to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
-    dataset = dataset.shuffle(1000).batch(batch_size).prefetch(tf.data.AUTOTUNE)
-    return dataset
+
+def get_dataset(bucket_path, batch_size=64, is_training=True):
+  """Function to read, parse and format to tuple a set of input tfrecord files.
+  Get all the files matching the pattern, parse and convert to tuple.
+  Args:
+    pattern: A file pattern to match in a Cloud Storage bucket.
+  Returns: 
+    A tf.data.Dataset
+  """
+  glob = tf.io.gfile.glob(os.path.join(bucket_path, "*.tfrecord.gz"))
+  if not glob:
+        print(f"No files in {pattern}")
+  dataset = tf.data.TFRecordDataset(glob, compression_type='GZIP')
+  dataset = dataset.map(parse_tfrecord, num_parallel_calls=tf.data.AUTOTUNE)
+  dataset = dataset.map(to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+  if is_training:
+        dataset = dataset.shuffle(1000).repeat()
+  
+  # drop_remainder=True é recomendado para TPU para manter shapes estáticos
+  dataset = dataset.batch(batch_size, drop_remainder=True)
+  dataset = dataset.prefetch(tf.data.AUTOTUNE)
+  return dataset
