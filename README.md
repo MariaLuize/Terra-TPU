@@ -32,6 +32,7 @@ Terra-TPU/
 ├── requirements.txt     # Python dependencies for both local and remote environments
 ├── run.sh               # Helper shell script for deployment automation
 └── .env.example         # Template for environment variables
+```
 
 ---
 
