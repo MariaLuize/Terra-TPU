@@ -1,7 +1,7 @@
 numpy>=1.26.0
 tensorflow>=2.15.0
-keras-kinetic
+'keras-kinetic[cli]'
 python-dotenv
 google-cloud-storage
-earthengine-api
-rasterio
+# earthengine-api
+# rasterio

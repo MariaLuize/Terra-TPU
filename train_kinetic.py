@@ -6,8 +6,7 @@ from data_loader import BANDS
 load_dotenv()
 
 PROJECT_ID  = os.getenv("KINETIC_PROJECT")
-# ZONE        = os.getenv("KINETIC_ZONE")
-# ZONE        = "us-west1-c"
+ZONE        = os.getenv("KINETIC_ZONE")
 # ACCELERATOR = os.getenv("TPU_TYPE", "v5litepod-4")
 ACCELERATOR = os.getenv("TPU_TYPE")
 

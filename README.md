@@ -1,6 +1,6 @@
 # Terra-TPU: Earth Observation Segmentation with Google Cloud TPUs & Keras Kinetic
 
-This repository presents a modular and scalable architecture for training Deep Learning models applied to **Earth Observation (EO)**, using **Aquaculture** mapping in satellite imagery as a case study.
+This repository presents a modular and scalable architecture for training Deep Learning models applied to **Earth Observation (EO)**, using **Aquaculture** mapping in satellite imagery (Landsat) as a case study.
 
 The core differentiator of this project is its integration with the [`keras-team/kinetic`](https://github.com/keras-team/kinetic) library. Kinetic enables the seamless training of complex models (like U-Nets) on **Google Cloud TPUs (v5e / v6e)** by abstracting the infrastructure complexity of Kubernetes (GKE).
 
