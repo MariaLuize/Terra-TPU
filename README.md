@@ -113,5 +113,5 @@ kinetic up --project=$KINETIC_PROJECT --zone=$KINETIC_ZONE --cluster=$KINETIC_CL
 kinetic down --project=$KINETIC_PROJECT --zone=$KINETIC_ZONE --cluster=$KINETIC_CLUSTE
 ```
 
-
+> Google Cloud credits were provided for this project
 
