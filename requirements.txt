@@ -4,6 +4,4 @@ keras-kinetic
 python-dotenv
 google-cloud-storage
 earthengine-api
-# scikit-image>=0.22.0
-# patchify
 rasterio
